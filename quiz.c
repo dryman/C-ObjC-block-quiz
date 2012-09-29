@@ -5,7 +5,7 @@
 #include <Block.h>
 
 typedef void (^BoringBlock)(void);
-void (^boringBlock)(void);
+BoringBlock boringBlock;
 
 void quiz_1 (void)
 {
