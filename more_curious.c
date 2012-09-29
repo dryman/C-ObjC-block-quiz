@@ -1,5 +1,5 @@
 /*
- * clang -Wall -fblocks -framework Foundation quiz.c -o quiz
+ * clang -Wall -fblocks -framework Foundation more_curious.c -o more_curious
  */
 #include <stdio.h>
 #include <Block.h>
@@ -27,7 +27,7 @@ extern const char *_Block_byref_dump(struct Block_byref *src);
 typedef void(^BoringBlock)(void);
 void (^boringBlock)(void);
 
-void quiz_6(void)
+BoringBlock blockRefCountTest(void)
 {
     __block int x = 1;
 
@@ -40,14 +40,21 @@ void quiz_6(void)
     printf("After local block generated:\n%s\n\n",_Block_byref_dump(derefBlockVar((char*)&x)));
 
     boringBlock = Block_copy(localBlock);
-    printf("After block copy:\n%s\n\n",_Block_byref_dump(derefBlockVar((char*)&x)));
+    printf("After first block copy:\n%s\n\n",_Block_byref_dump(derefBlockVar((char*)&x)));
+
+    BoringBlock retBlock = Block_copy(localBlock);
+    printf("After second block copy:\n%s\n\n",_Block_byref_dump(derefBlockVar((char*)&x)));
+    return retBlock;
 }
 
 int main (void)
 {
-    quiz_6();
+    BoringBlock retBlock = blockRefCountTest();
     boringBlock();
     Block_release(boringBlock);
+    retBlock();
+    Block_release(retBlock);
 
     return 0;
 }
+
